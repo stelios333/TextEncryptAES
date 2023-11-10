@@ -4,6 +4,7 @@
 <head>
     <title>TextEncryptAES</title>
     <meta charset="utf-8">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
         integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
@@ -71,11 +72,13 @@
                         </div>
                     </form>
                     <div id="error">
-                    <div class="row">
-                        <div class="col-sm-3"><i class="fa-solid fa-circle-exclamation" style="color: #c70000;font-size:80px"></i></div>
-                        <div class="col-sm-8">An error occurred. The provided password is probably wrong or the provided encrypted is invalid/incomplete.</div>
-                      </div>
-                      </div>
+                        <div class="row">
+                            <div class="col-sm-3"><i class="fa-solid fa-circle-exclamation"
+                                    style="color: #c70000;font-size:80px"></i></div>
+                            <div class="col-sm-8">An error occurred. The provided password is probably wrong or the
+                                provided encrypted is invalid/incomplete.</div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
@@ -116,7 +119,17 @@
 
                     <div class="mb-3 col-sm">
                         <label for="pwd" class="form-label">Password:</label>
-                        <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pswd">
+
+                        <div class="input-group mb-3">
+                            <input type="password" class="form-control" id="pwd" placeholder="Enter password"
+                                name="pswd">
+                            <span class="input-group-text" role="button" id="togglePassword">
+                                <i id="eyeIcon" class="fa-regular fa-eye"></i>
+                            </span>
+                        </div>
+
+                     
+
                     </div>
                 </div>
                 <div class="d-grid mb-3">
@@ -156,12 +169,22 @@
         const main_form = document.getElementById("main_form")
         const text_field = document.getElementById("text")
         const password_element = document.getElementById("pwd")
+        const toggle_password = document.getElementById("togglePassword")
+        const eye_icon = toggle_password.querySelector("i")
         var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
         var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
             return new bootstrap.Popover(popoverTriggerEl)
         })
         var action = action_selector.value
-
+        toggle_password.addEventListener("click", function() {
+            if(password_element.getAttribute("type") == "password") {
+                password_element.setAttribute("type", "text")
+                eye_icon.setAttribute("class", "fa-regular fa-eye-slash")
+            } else {
+                password_element.setAttribute("type", "password")
+                eye_icon.setAttribute("class", "fa-regular fa-eye")
+            }
+        })
         result_modal.addEventListener('show.bs.modal', function (event) {
 
             const modal_title = result_modal.querySelector('.modal-title')
