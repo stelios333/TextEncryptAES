@@ -68,7 +68,7 @@
                     </form>
                     <div id="error">
                         <div class="row">
-                            <div class="col-sm-3"><i class="fa-solid fa-circle-exclamation"
+                            <div class="col-sm-3 mb-3"><i class="fa-solid fa-circle-exclamation"
                                     style="color: #c70000;font-size:80px"></i></div>
                             <div class="col-sm-8">An error occurred. The provided password is probably wrong or the
                                 provided encrypted is invalid/incomplete.</div>
@@ -199,7 +199,7 @@
         if (localStorage.getItem("selection") == null) {
             localStorage.setItem("selection", "1")
         }
-        function set_submit_btn_text(){
+        function set_submit_btn_text() {
             action = action_selector.value
             localStorage.setItem("selection", action)
             if (action == "1") {
