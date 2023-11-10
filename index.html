@@ -59,8 +59,8 @@
                 <div class="modal-body">
                     <form id="result_form">
 
-                        <div class="mb-0">
-                            <label for="message-text" id="result_explanation" class="col-form-label">Encrypted
+                        <div class="mb-0 mt-0">
+                            <label for="message-text" id="result_explanation" class="col-form-label pt-0">Encrypted
                                 text:</label>
                             <textarea class="form-control" id="message-text" disabled></textarea>
 
@@ -194,6 +194,11 @@
             return new bootstrap.Popover(popoverTriggerEl)
         })
         var action = action_selector.value
+        if (localStorage.getItem("selection") == null) {
+            localStorage.setItem("selection", "1")
+        }
+        action_selector.value = localStorage.getItem("selection")
+        // Show/hide the password
         toggle_password.addEventListener("click", function () {
             if (password_element.getAttribute("type") == "password") {
                 password_element.setAttribute("type", "text")
@@ -203,6 +208,7 @@
                 eye_icon.setAttribute("class", "fa-regular fa-eye")
             }
         })
+        // What to do when opening the result modal.
         result_modal.addEventListener('show.bs.modal', function (event) {
 
             const modal_title = result_modal.querySelector('.modal-title')
@@ -256,6 +262,7 @@
         }
 
         )
+        // Make sure that the footer div doesn't cover other elements
         padding_element.setAttribute("style", "margin-top: " + String(footer_element.offsetHeight + 10) + "px")
         window.addEventListener("resize", function () {
             padding_element.setAttribute("style", "margin-top: " + String(footer_element.offsetHeight + 10) + "px")
@@ -277,6 +284,7 @@
         })
         action_selector.addEventListener("change", function () {
             action = action_selector.value
+            localStorage.setItem("selection", action)
             if (action == "1") {
                 submit_btn.innerHTML = 'Decrypt <i class="fa-solid fa-lock-open">'
             } else if (action == "2") {
