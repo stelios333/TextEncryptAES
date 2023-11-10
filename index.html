@@ -232,6 +232,7 @@
                 result_label.innerHTML = "Encrypted Text:"
                 text_area.value = encrypted
                 text_field.value = ""
+                submit_btn.disabled = true
                 console.log(encrypted)
 
             }
@@ -255,6 +256,7 @@
                     result_label.innerHTML = "Decrypted Text:"
                     text_area.value = decrypted
                     text_field.value = ""
+                    submit_btn.disabled = true
                 }
 
             }
@@ -278,6 +280,13 @@
 
             } else {
                 submit_btn.disabled = true
+            }
+            if(text_field.value.startsWith("U2FsdGVkX1")) {
+                action_selector.value = "1"
+                set_submit_btn_text()
+            } else {
+                action_selector.value = "2"
+                set_submit_btn_text() 
             }
         })
         password_element.addEventListener("keyup", function () {
