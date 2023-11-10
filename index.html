@@ -80,8 +80,8 @@
                     <div class="row">
                         <div class="col" id="copy_btn_container">
                             <div class="d-grid">
-                                <button type="button" id="copyButton" role="button" class="btn btn-primary btn-block"
-                                    data-bs-toggle="popover" title="Text copied!" data-bs-trigger="focus"
+                                <button tabindex="0" data-bs-trigger="focus" type="button" id="copyButton" role="button"
+                                    class="btn btn-primary btn-block" title="Text copied!"
                                     data-bs-content="Paste it wherever you want." data-bs-placement="left">Copy text
                                     <i class="fa-solid fa-copy"></i></button>
                             </div>
@@ -127,13 +127,13 @@
             <div class="container-fluid mt-3">
                 <div class="row">
                     <div class="mb-3 col-sm">
-                        <label for="text" class="form-label">Text:</label>
+                        <label for="text" class="form-label"><span class="fw-bold">Text:</span></label>
                         <textarea class="form-control" id="text"
                             placeholder="Enter you want to encrypt/decrypt text here" name="text"></textarea>
                     </div>
 
                     <div class="mb-3 col-sm">
-                        <label for="pwd" class="form-label">Password:</label>
+                        <label for="pwd" class="form-label"><span class="fw-bold">Password:</span></label>
 
                         <div class="input-group mb-3">
                             <input type="password" class="form-control" id="pwd" placeholder="Enter password"
@@ -191,11 +191,9 @@
         const copy_btn_container = document.getElementById("copy_btn_container")
         const copy_btn = document.getElementById("copyButton")
         const text_area = result_modal.querySelector("#message-text")
-        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-        var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-            return new bootstrap.Popover(popoverTriggerEl)
-        })
+        const copy_btn_popover = new bootstrap.Popover(copy_btn, { "delay": 50 })
         var action = action_selector.value
+
         if (localStorage.getItem("selection") == null) {
             localStorage.setItem("selection", "1")
         }
@@ -265,6 +263,7 @@
             text_area.setSelectionRange(0, 99999)
             navigator.clipboard.writeText(text_area.value)
             text_area.disabled = true
+            copy_btn.focus()
         })
         // Make sure that the footer div doesn't cover other elements
         padding_element.setAttribute("style", "margin-top: " + String(footer_element.offsetHeight + 10) + "px")
