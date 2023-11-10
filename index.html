@@ -174,8 +174,8 @@
                 result_form.style = "display:block"
                 error_element.style = "display:none"
                 modal_title.innerHTML = "Encrypted Text"
-                result_label.innerHTML = "Encrypted Text"
-                text_area.textContent = encrypted
+                result_label.innerHTML = "Encrypted Text:"
+                text_area.value = encrypted
                 text_area.disabled = false
                 text_area.select()
                 text_area.setSelectionRange(0, 99999)
@@ -198,7 +198,7 @@
                     result_form.style = "display:block"
                     error_element.style = "display:none"
                     modal_title.innerHTML = "Decrypted Text"
-                    result_label.innerHTML = "Decrypted Text"
+                    result_label.innerHTML = "Decrypted Text:"
                     text_area.value = decrypted
                     text_area.disabled = false
                     text_area.select()
