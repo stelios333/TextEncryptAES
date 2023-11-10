@@ -4,7 +4,7 @@
 <head>
     <title>TextEncryptAES</title>
     <meta charset="utf-8">
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="./favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
         integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
@@ -41,7 +41,7 @@
 
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
 
             </div>
@@ -63,12 +63,7 @@
                             <label for="message-text" id="result_explanation" class="col-form-label">Encrypted
                                 text:</label>
                             <textarea class="form-control" id="message-text" disabled></textarea>
-                            <div class="d-grid mb-0">
-                                <button type="button" role="button" class="btn btn-primary btn-block mt-3 mb-0"
-                                    data-bs-toggle="popover" title="Text copied!" data-bs-trigger="focus"
-                                    data-bs-content="Paste it wherever you want.">Copy text
-                                    <i class="fa-solid fa-copy"></i></button>
-                            </div>
+
                         </div>
                     </form>
                     <div id="error">
@@ -80,12 +75,32 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                <div class="modal-footer" style="display:block;text-align: left;">
+
+                    <div class="row">
+                        <div class="col" id="copy_btn_container">
+                            <div class="d-grid">
+                                <button type="button" role="button" class="btn btn-primary btn-block"
+                                    data-bs-toggle="popover" title="Text copied!" data-bs-trigger="focus"
+                                    data-bs-content="Paste it wherever you want.">Copy text
+                                    <i class="fa-solid fa-copy"></i></button>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="d-grid">
+                                <button type="button" class="btn btn-outline-danger btn-block"
+                                    data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
+
             </div>
+
         </div>
+    </div>
     </div>
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
         <div class="container-fluid">
@@ -128,7 +143,7 @@
                             </span>
                         </div>
 
-                     
+
 
                     </div>
                 </div>
@@ -155,8 +170,10 @@
         <div class="text-center text-white p-3">
             © 2023 Copyright:
             Stelios333.
-            UI powered by <a target="_blank" class="text-light" href="https://getbootstrap.com/">Bootstrap</a>. Icons by
-            <a target="_blank" class="text-light" href="https://fontawesome.com">Fontawesome</a>.
+            UI stylesheet by <a target="_blank" class="text-light" href="https://getbootstrap.com/">Bootstrap</a>. Icons
+            by
+            <a target="_blank" class="text-light" href="https://fontawesome.com">Font Awesome</a>.
+            AES algorithm by <a target="_blank" class="text-light" href="https://github.com/brix/crypto-js">CryptoJS</a>
         </div>
         <!-- Copyright -->
     </footer>
@@ -171,13 +188,14 @@
         const password_element = document.getElementById("pwd")
         const toggle_password = document.getElementById("togglePassword")
         const eye_icon = toggle_password.querySelector("i")
+        const copy_btn_container = document.getElementById("copy_btn_container")
         var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
         var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
             return new bootstrap.Popover(popoverTriggerEl)
         })
         var action = action_selector.value
-        toggle_password.addEventListener("click", function() {
-            if(password_element.getAttribute("type") == "password") {
+        toggle_password.addEventListener("click", function () {
+            if (password_element.getAttribute("type") == "password") {
                 password_element.setAttribute("type", "text")
                 eye_icon.setAttribute("class", "fa-regular fa-eye-slash")
             } else {
@@ -194,6 +212,7 @@
             const error_element = result_modal.querySelector("#error")
             if (action == "2") {
                 var encrypted = CryptoJS.AES.encrypt(text_field.value, password_element.value).toString()
+                copy_btn_container.style = "display: block"
                 result_form.style = "display:block"
                 error_element.style = "display:none"
                 modal_title.innerHTML = "Encrypted Text"
@@ -211,13 +230,16 @@
                 var decrypted;
                 result_form.style = "display:none"
                 error_element.style = "display:block"
+                copy_btn_container.style = "display: none"
                 decrypted = CryptoJS.AES.decrypt(text_field.value, password_element.value).toString(CryptoJS.enc.Utf8)
 
                 if (decrypted == "") {
                     modal_title.innerHTML = "Error"
+                    copy_btn_container.style = "display: none"
                     result_form.style = "display:none"
                     error_element.style = "display:block"
                 } else {
+                    copy_btn_container.style = "display: block"
                     result_form.style = "display:block"
                     error_element.style = "display:none"
                     modal_title.innerHTML = "Decrypted Text"
