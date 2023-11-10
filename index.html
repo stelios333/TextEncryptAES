@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>TextEncryptAES</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"
+        integrity="sha512-a+SUDuwNzXDvz4XrIcXHuCf089/iJAoN4lmrXJg18XnduKK6YlDHNRalv4yd1N40OKI80tFidF+rqTFKGPoWFQ=="
+        crossorigin="anonymous" referrerpolicy="no-referre"></script>
+</head>
+
+<body>
+    <div class="modal fade" id="about_dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">About this site</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    This website is created is created by Stelios333.
+                    <br>
+                    I personaly do not collect any data and never share your text with third parties.
+                    The only thing that is being collected is how many times you visit my website and not be me, by
+                    Github.
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="result">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title" id="result_title">Encrypted text</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form id="result_form">
+
+                        <div class="mb-0">
+                            <label for="message-text" id="result_explanation" class="col-form-label">Encrypted
+                                text:</label>
+                            <textarea class="form-control" id="message-text" disabled></textarea>
+                            <div class="d-grid mb-0">
+                                <button type="button" role="button" class="btn btn-primary btn-block mt-3 mb-0"
+                                    data-bs-toggle="popover" title="Text copied!" data-bs-trigger="focus"
+                                    data-bs-content="Paste it wherever you want.">Copy text
+                                    <i class="fa-solid fa-copy"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="error">
+                    <div class="row">
+                        <div class="col-sm-3"><i class="fa-solid fa-circle-exclamation" style="color: #c70000;font-size:80px"></i></div>
+                        <div class="col-sm-8">An error occurred. The provided password is probably wrong or the provided encrypted is invalid/incomplete.</div>
+                      </div>
+                      </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">TextEncryptAES</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="modal" data-bs-target="#about_dialog" role="button">About <i
+                                class="fa-solid fa-circle-info"></i></a>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid p-2 bg-primary text-white text-center">
+        <h1>Text Encryptor/Decryptor using the AES encryption Algorithm</h1>
+        <p>To use just type/paste your encrypted/decrypted text, enter a password and click the button.</p>
+    </div>
+    <div class="container mt-3">
+        <form id="main_form">
+            <div class="container-fluid mt-3">
+                <div class="row">
+                    <div class="mb-3 col-sm">
+                        <label for="text" class="form-label">Text:</label>
+                        <textarea class="form-control" id="text"
+                            placeholder="Enter you want to encrypt/decrypt text here" name="text"></textarea>
+                    </div>
+
+                    <div class="mb-3 col-sm">
+                        <label for="pwd" class="form-label">Password:</label>
+                        <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pswd">
+                    </div>
+                </div>
+                <div class="d-grid mb-3">
+                    <select class="form-select" id="action_selector">
+                        <option value="1">Decrypt</option>
+                        <option value="2">Encrypt</option>
+                    </select>
+                </div>
+
+                <div class="d-grid mt-3">
+                    <button type="submit" class="btn btn-primary btn-block" data-bs-toggle="modal"
+                        data-bs-target="#result" id="submit_btn" disabled>Decrypt <i
+                            class="fa-solid fa-lock-open"></i></button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div style="margin-top: 80px;" id="padding">
+
+    </div>
+    <footer class="bg-dark text-center text-lg-start  fixed-bottom" id="footer">
+        <!-- Copyright -->
+        <div class="text-center text-white p-3">
+            © 2023 Copyright:
+            Stelios333.
+            UI powered by <a target="_blank" class="text-light" href="https://getbootstrap.com/">Bootstrap</a>. Icons by
+            <a target="_blank" class="text-light" href="https://fontawesome.com">Fontawesome</a>.
+        </div>
+        <!-- Copyright -->
+    </footer>
+    <script>
+        const result_modal = document.getElementById('result')
+        const footer_element = document.getElementById("footer")
+        const padding_element = document.getElementById("padding")
+        const action_selector = document.getElementById("action_selector")
+        const submit_btn = document.getElementById("submit_btn")
+        const main_form = document.getElementById("main_form")
+        const text_field = document.getElementById("text")
+        const password_element = document.getElementById("pwd")
+        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl)
+        })
+        var action = action_selector.value
+
+        result_modal.addEventListener('show.bs.modal', function (event) {
+
+            const modal_title = result_modal.querySelector('.modal-title')
+            const text_area = result_modal.querySelector("#message-text")
+            const result_label = result_modal.querySelector("#result_explanation")
+            const result_form = result_modal.querySelector("#result_form")
+            const error_element = result_modal.querySelector("#error")
+            if (action == "2") {
+                var encrypted = CryptoJS.AES.encrypt(text_field.value, password_element.value).toString()
+                result_form.style = "display:block"
+                error_element.style = "display:none"
+                modal_title.innerHTML = "Encrypted Text"
+                result_label.innerHTML = "Encrypted Text"
+                text_area.textContent = encrypted
+                text_area.disabled = false
+                text_area.select()
+                text_area.setSelectionRange(0, 99999)
+                navigator.clipboard.writeText(text_area.value)
+                text_area.disabled = true
+                console.log(encrypted)
+
+            }
+            if (action == "1") {
+                var decrypted;
+                result_form.style = "display:none"
+                error_element.style = "display:block"
+                decrypted = CryptoJS.AES.decrypt(text_field.value, password_element.value).toString(CryptoJS.enc.Utf8)
+
+                if (decrypted == "") {
+                    modal_title.innerHTML = "Error"
+                    result_form.style = "display:none"
+                    error_element.style = "display:block"
+                } else {
+                    result_form.style = "display:block"
+                    error_element.style = "display:none"
+                    modal_title.innerHTML = "Decrypted Text"
+                    result_label.innerHTML = "Decrypted Text"
+                    text_area.value = decrypted
+                    text_area.disabled = false
+                    text_area.select()
+                    text_area.setSelectionRange(0, 99999)
+                    navigator.clipboard.writeText(text_area.value)
+                    text_area.disabled = true
+                }
+
+            }
+        }
+
+        )
+        padding_element.setAttribute("style", "margin-top: " + String(footer_element.offsetHeight + 10) + "px")
+        window.addEventListener("resize", function () {
+            padding_element.setAttribute("style", "margin-top: " + String(footer_element.offsetHeight + 10) + "px")
+        })
+        text_field.addEventListener("keyup", function () {
+            if (!text_field.value == "" & !password_element.value == "") {
+                submit_btn.disabled = false
+
+            } else {
+                submit_btn.disabled = true
+            }
+        })
+        password_element.addEventListener("keyup", function () {
+            if (!password_element.value == "" & !text_field.value == "") {
+                submit_btn.disabled = false
+            } else {
+                submit_btn.disabled = true
+            }
+        })
+        action_selector.addEventListener("change", function () {
+            action = action_selector.value
+            if (action == "1") {
+                submit_btn.innerHTML = 'Decrypt <i class="fa-solid fa-lock-open">'
+            } else if (action == "2") {
+                submit_btn.innerHTML = 'Encrypt <i class="fa-solid fa-lock">'
+            }
+        })
+        main_form.addEventListener("submit", function (e) {
+            e.preventDefault()
+
+        })
+
+    </script>
+</body>
+
+</html>
