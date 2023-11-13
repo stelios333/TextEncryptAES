@@ -34,6 +34,20 @@
             left: 50%;
             transform: translate(-50%, -50%) scale(5, 5);
         }
+
+        .pr-0 {
+            padding-right: 0 !important;
+        }
+
+        .pl-0 {
+            padding-left: 0 !important;
+        }
+
+        @media (max-width: 576px) {
+            .sm-dev-mg {
+                margin-bottom: 1rem !important;
+            }
+        }
     </style>
 </head>
 
@@ -137,13 +151,21 @@
                                 <label class="form-check-label lh-1" for="autodetect_enabled">Enable automatic
                                     encrypted/decrypted text detection (Recommended)</label>
                             </div>
-                            <p class="my-0 lh-1 text-muted"><small>When enabled the encrypt/decrypt option will be
+                            <p class="mt-0 mb-2 lh-1 text-muted"><small>When enabled the encrypt/decrypt option will be
                                     automatically choosen, based on the provided text.</small></p>
+                            <div class="form-check form-switch" style="margin-bottom: -4px;">
+                                <input class="form-check-input" type="checkbox" id="clear_enabled" name="darkmode"
+                                    checked>
+                                <label class="form-check-label lh-1" for="clear_enabled">Clear text field after
+                                    successful decryption/encryption</label>
+                            </div>
+                            <p class="my-0 lh-1 text-muted"><small>When a successful decryption or decryption occurrs,
+                                    the text field will be reseted</small></p>
                         </div>
                     </div>
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="mb-2">Security settings</h5>
+                            <h5 class="mb-0">Security settings</h5>
                         </div>
                         <div class="card-body pt-1 pb-2">
                             <div class="form-check form-switch" style="margin-bottom: -4px;">
@@ -185,7 +207,7 @@
                     </form>
                     <div id="error">
                         <div class="row">
-                            <div class="col-sm-3 mb-3"><i class="fa-solid fa-circle-exclamation"
+                            <div class="col-sm-3 sm-dev-mg text-center"><i class="fa-solid fa-circle-exclamation"
                                     style="color: #c70000;font-size:80px"></i></div>
                             <div class="col-sm-8">An error occurred. The provided password is probably wrong or the
                                 provided encrypted is invalid/incomplete.</div>
@@ -195,7 +217,7 @@
                 <div class="modal-footer" style="display:block;text-align: left;">
 
                     <div class="row">
-                        <div class="col" id="copy_btn_container">
+                        <div class="col pl-0" id="copy_btn_container">
                             <div class="d-grid">
                                 <button tabindex="0" data-bs-trigger="focus" type="button" id="copyButton" role="button"
                                     class="btn btn-primary btn-block" title="Text copied!"
@@ -203,7 +225,7 @@
                                     <i class="fa-solid fa-copy"></i></button>
                             </div>
                         </div>
-                        <div class="col">
+                        <div id="close_btn_container" class="col pr-0">
                             <div class="d-grid">
                                 <button type="button" class="btn btn-outline-danger btn-block"
                                     data-bs-dismiss="modal">Close</button>
@@ -314,6 +336,8 @@
         const eye_icon = toggle_password.querySelector("i")
         const copy_btn_container = document.getElementById("copy_btn_container")
         const copy_btn = document.getElementById("copyButton")
+        const close_btn_container = document.getElementById("close_btn_container")
+        const clear_chk_btn = document.getElementById("clear_enabled")
         const scripts_chk_btn = document.getElementById("scripts_enabled")
         const loader = document.getElementById("loading")
         const autodetect_chk_btn = document.getElementById("autodetect_enabled")
@@ -327,7 +351,14 @@
         const result_modal_modal = new bootstrap.Modal(result_modal)
         var action = action_selector.value
 
-
+        function set_submit_btn_text() {
+            action = action_selector.value
+            if (action == "1") {
+                submit_btn.innerHTML = 'Decrypt <i class="fa-solid fa-lock-open">'
+            } else if (action == "2") {
+                submit_btn.innerHTML = 'Encrypt <i class="fa-solid fa-lock">'
+            }
+        }
         function autodetect() {
             if (text_field.value.startsWith("U2FsdGVkX1")) {
                 action_selector.value = "1"
@@ -337,11 +368,27 @@
                 set_submit_btn_text()
             }
         }
-        function set_checkbox(elem, setting_name, false_name) {
-            if (setting(setting_name) == false_name) {
-                elem.checked = 0
+        function sync_checkbox_setting(checkbox_elem, setting_name, true_value = "1", false_value = "0", code_if_checked = () => { }, code_if_not_checked = () => { }) {
+            if (checkbox_elem.checked) {
+                setting(setting_name, true_value)
+                code_if_checked()
             } else {
-                elem.checked = 1
+                setting(setting_name, false_value)
+                code_if_not_checked()
+            }
+        }
+        function set_checkbox(checkbox_elem, setting_name, false_name = "0") {
+            if (setting(setting_name) == false_name) {
+                checkbox_elem.checked = 0
+            } else {
+                checkbox_elem.checked = 1
+            }
+        }
+        function setting(name, value = null) {
+            if (value == null) {
+                return localStorage.getItem(name)
+            } else {
+                localStorage.setItem(name, value)
             }
         }
         function init_setting(name, value = null) {
@@ -352,50 +399,38 @@
         function show_error() {
             modal_title.innerHTML = "Error"
             copy_btn_container.style = "display: none"
+            close_btn_container.classList.add("pl-0")
             result_form.style = "display:none"
             error_element.style = "display:block"
+
         }
         function show_success() {
             copy_btn_container.style = "display: block"
             result_form.style = "display:block"
+            close_btn_container.classList.remove("pl-0")
             error_element.style = "display:none"
             text_area.style = "display: block"
         }
-        function setting(name, value = null) {
-            if (value == null) {
-                return localStorage.getItem(name)
-            } else {
-                localStorage.setItem(name, value)
+        function after_successful() {
+            if (setting("clear_enabled") == "1") {
+                text_field.value = ""
+                submit_btn.disabled = true
             }
         }
-        function set_submit_btn_text() {
-            action = action_selector.value
-            if (action == "1") {
-                submit_btn.innerHTML = 'Decrypt <i class="fa-solid fa-lock-open">'
-            } else if (action == "2") {
-                submit_btn.innerHTML = 'Encrypt <i class="fa-solid fa-lock">'
-            }
-        }
+
         window.addEventListener("load", function () {
             setTimeout(function () {
                 loader.style.display = "none"
             }, 500)
         })
         scripts_chk_btn.addEventListener("change", function () {
-            if (scripts_chk_btn.checked) {
-                setting("scripts_enabled", "1")
-            } else {
-                setting("scripts_enabled", "0")
-            }
+            sync_checkbox_setting(scripts_chk_btn, "scripts_enabled")
         })
         autodetect_chk_btn.addEventListener("change", function () {
-            if (autodetect_chk_btn.checked) {
-                setting("autodetect_enabled", "1")
-                autodetect()
-            } else {
-                setting("autodetect_enabled", "0")
-            }
-
+            sync_checkbox_setting(autodetect_chk_btn, "autodetect_enabled", undefined, undefined, autodetect)
+        })
+        clear_chk_btn.addEventListener("change", function () {
+            sync_checkbox_setting(clear_chk_btn, "clear_enabled")
         })
         // Show/hide the password
         toggle_password.addEventListener("click", function () {
@@ -417,15 +452,14 @@
                 modal_title.innerHTML = "Encrypted text"
                 result_label.innerHTML = "Encrypted text:"
                 text_area.value = encrypted
-                text_field.value = ""
-                submit_btn.disabled = true
+                after_successful()
                 console.log(encrypted)
 
             }
             if (action == "1") {
                 var decrypted;
                 show_error()
-                decrypted = CryptoJS.AES.decrypt(text_field.value, password_element.value).toString(CryptoJS.enc.Utf8)
+                decrypted = CryptoJS.AES.decrypt(text_field.value.replaceAll("\n", ""), password_element.value).toString(CryptoJS.enc.Utf8)
 
                 if (decrypted == "") {
                     show_error()
@@ -433,6 +467,9 @@
 
                     show_success()
                     if (decrypted.startsWith("HTML_SCRIPT\n") && decrypted.endsWith("\nHTML_SCRIPT")) {
+                        close_btn_container.classList.add("pl-0")
+                        text_area.style = "display: none"
+                        copy_btn_container.style = "display: none"
                         if (scripts_chk_btn.checked) {
                             result_modal.addEventListener('shown.bs.modal', event => {
                                 loaded_script.text = decrypted.replace("HTML_SCRIPT\n", "").replace(/\nHTML_SCRIPT([^_]*)$/, "" + '$1');
@@ -441,25 +478,23 @@
 
                             modal_title.innerHTML = "Decrypted script"
                             result_label.innerHTML = "The decrypted text was a script. The script has been executed. If you wish to disable script loading, you can do it through the settings menu."
-                            text_area.style = "display: none"
-                            copy_btn_container.style = "display: none"
+                            after_successful()
                         } else {
-                            modal_title.innerHTML = "Decrypted script execution failed"
+                            modal_title.innerHTML = "Script execution prevented"
                             result_label.innerHTML = "The decrypted text was a script. The script <b>hasn't</b> been executed because script loading is disabled. If you wish to enable that, you can do it through the settings menu."
-                            text_area.style = "display: none"
-                            copy_btn_container.style = "display: none"
                         }
                     } else {
                         modal_title.innerHTML = "Decrypted text"
                         result_label.innerHTML = "Decrypted text"
                         text_area.value = decrypted
+                        after_successful()
                     }
-                    text_field.value = ""
-                    submit_btn.disabled = true
+                    
 
                 }
 
             }
+
         })
         copy_btn.addEventListener("click", function () {
             text_area.disabled = false
@@ -492,9 +527,9 @@
                 submit_btn.disabled = true
             }
         })
-        set_checkbox(scripts_chk_btn, "scripts_enavled", "0")
-        set_checkbox(autodetect_chk_btn, "autodetect_enabled", "0")
-
+        set_checkbox(scripts_chk_btn, "scripts_enabled")
+        set_checkbox(autodetect_chk_btn, "autodetect_enabled")
+        set_checkbox(clear_chk_btn, "clear_enabled")
         // Show result modal when the submit button gets clicked
         submit_btn.addEventListener("click", function () {
             loader.style.display = "block"
@@ -508,6 +543,7 @@
         // Initialize settings
         init_setting("scripts_enabled", "1")
         init_setting("autodetect_enabled", "1")
+        init_setting("clear_enabled", "1")
         // Prevent reload on submit
         main_form.addEventListener("submit", function (e) {
             e.preventDefault()
