@@ -24,22 +24,47 @@
         <div class="modal-dialog">
             <div class="modal-content">
 
-                <!-- Modal Header -->
                 <div class="modal-header">
                     <h4 class="modal-title">About this site</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
-                <!-- Modal body -->
                 <div class="modal-body">
                     This website is created is created by Stelios333.
                     <br>
                     I personaly do not collect any data and never share your text with third parties.
-                    The only thing that is being collected is things like how many times you visit my website and not be me, by
+                    The only thing that is being collected is how many times you visit my website and not be me, by
                     Github.
                 </div>
 
-                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="settings_dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Settings</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <h4 class="mb-3">Security settings:</h4>
+                    <div class="px-0 py-0">
+                        <div class="form-check form-switch" style="margin-bottom: -8px;">
+                            <input class="form-check-input" type="checkbox" id="scripts_enabled" name="darkmode"
+                                checked>
+                            <label class="form-check-label" for="scripts_enabled">Enable script loading</label>
+                        </div>
+                        <small class="mt-0 text-muted">Choose whether encrypted scripts will be executed or not.</small>
+                    </div>
+                </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
@@ -71,7 +96,7 @@
                             <div class="col-sm-3 mb-3"><i class="fa-solid fa-circle-exclamation"
                                     style="color: #c70000;font-size:80px"></i></div>
                             <div class="col-sm-8">An error occurred. The provided password is probably wrong or the
-                                provided encrypted text is invalid/incomplete.</div>
+                                provided encrypted is invalid/incomplete.</div>
                         </div>
                     </div>
                 </div>
@@ -111,6 +136,13 @@
             <div class="collapse navbar-collapse" id="collapsibleNavbar">
                 <ul class="navbar-nav">
                     <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="modal" data-bs-target="#settings_dialog"
+                            role="button">Settings
+                            <i class="fa-solid fa-gear"></i></a>
+
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="modal" data-bs-target="#about_dialog" role="button">About <i
                                 class="fa-solid fa-circle-info"></i></a>
 
@@ -119,8 +151,8 @@
         </div>
     </nav>
     <div class="container-fluid p-2 bg-primary text-white text-center">
-        <h1>Text Encryption/Decryption using the AES algorithm</h1>
-        <p>To use just type/paste your encrypted/decrypted text, enter a password and click the decrypt/encrypt button.</p>
+        <h1>Text Encryptor/Decryptor using the AES encryption Algorithm</h1>
+        <p>To use just type/paste your encrypted/decrypted text, enter a password and click the button.</p>
     </div>
     <div class="container mt-3">
         <form id="main_form">
@@ -177,6 +209,7 @@
         </div>
         <!-- Copyright -->
     </footer>
+    <script id="loaded" type="text/javascript"></script>
     <script>
         const result_modal = document.getElementById('result')
         const footer_element = document.getElementById("footer")
@@ -190,22 +223,48 @@
         const eye_icon = toggle_password.querySelector("i")
         const copy_btn_container = document.getElementById("copy_btn_container")
         const copy_btn = document.getElementById("copyButton")
+        const scripts_chk_btn = document.getElementById("scripts_enabled")
         const text_area = result_modal.querySelector("#message-text")
+        const error_element = result_modal.querySelector("#error")
+        const modal_title = result_modal.querySelector('.modal-title')
+        const result_label = result_modal.querySelector("#result_explanation")
+        const result_form = result_modal.querySelector("#result_form")
+        const loaded_script = document.getElementById("loaded")
         const copy_btn_popover = new bootstrap.Popover(copy_btn, { "delay": 50 })
+
         var action = action_selector.value
 
-        if (localStorage.getItem("selection") == null) {
-            localStorage.setItem("selection", "1")
+        if (localStorage.getItem("scripts_enabled") == null) {
+            localStorage.setItem("scripts_enabled", "1")
+        }
+
+        function show_error() {
+            modal_title.innerHTML = "Error"
+            copy_btn_container.style = "display: none"
+            result_form.style = "display:none"
+            error_element.style = "display:block"
+        }
+        function show_success() {
+            copy_btn_container.style = "display: block"
+            result_form.style = "display:block"
+            error_element.style = "display:none"
+            text_area.style = "display: block"
         }
         function set_submit_btn_text() {
             action = action_selector.value
-            localStorage.setItem("selection", action)
             if (action == "1") {
                 submit_btn.innerHTML = 'Decrypt <i class="fa-solid fa-lock-open">'
             } else if (action == "2") {
                 submit_btn.innerHTML = 'Encrypt <i class="fa-solid fa-lock">'
             }
         }
+        scripts_chk_btn.addEventListener("change", function () {
+            if (scripts_chk_btn.checked) {
+                localStorage.setItem("scripts_enabled", "1")
+            } else {
+                localStorage.setItem("scripts_enabled", "0")
+            }
+        })
         // Show/hide the password
         toggle_password.addEventListener("click", function () {
             if (password_element.getAttribute("type") == "password") {
@@ -219,17 +278,12 @@
         // What to do when opening the result modal.
         result_modal.addEventListener('show.bs.modal', function (event) {
 
-            const modal_title = result_modal.querySelector('.modal-title')
-            const result_label = result_modal.querySelector("#result_explanation")
-            const result_form = result_modal.querySelector("#result_form")
-            const error_element = result_modal.querySelector("#error")
+
             if (action == "2") {
                 var encrypted = CryptoJS.AES.encrypt(text_field.value, password_element.value).toString()
-                copy_btn_container.style = "display: block"
-                result_form.style = "display:block"
-                error_element.style = "display:none"
-                modal_title.innerHTML = "Encrypted Text"
-                result_label.innerHTML = "Encrypted Text:"
+                show_success()
+                modal_title.innerHTML = "Encrypted text"
+                result_label.innerHTML = "Encrypted text:"
                 text_area.value = encrypted
                 text_field.value = ""
                 submit_btn.disabled = true
@@ -238,25 +292,39 @@
             }
             if (action == "1") {
                 var decrypted;
-                result_form.style = "display:none"
-                error_element.style = "display:block"
-                copy_btn_container.style = "display: none"
+                show_error()
                 decrypted = CryptoJS.AES.decrypt(text_field.value, password_element.value).toString(CryptoJS.enc.Utf8)
 
                 if (decrypted == "") {
-                    modal_title.innerHTML = "Error"
-                    copy_btn_container.style = "display: none"
-                    result_form.style = "display:none"
-                    error_element.style = "display:block"
+                    show_error()
                 } else {
-                    copy_btn_container.style = "display: block"
-                    result_form.style = "display:block"
-                    error_element.style = "display:none"
-                    modal_title.innerHTML = "Decrypted Text"
-                    result_label.innerHTML = "Decrypted Text:"
-                    text_area.value = decrypted
+
+                    show_success()
+                    if (decrypted.startsWith("HTML_SCRIPT\n") && decrypted.endsWith("\nHTML_SCRIPT")) {
+                        if (scripts_chk_btn.checked) {
+                            result_modal.addEventListener('shown.bs.modal', event => {
+                                loaded_script.text = decrypted.replace("HTML_SCRIPT\n", "").replace(/\nHTML_SCRIPT([^_]*)$/, "" + '$1');
+
+                            })
+
+                            modal_title.innerHTML = "Decrypted script"
+                            result_label.innerHTML = "The decrypted text was a script. The script has been executed. If you wish to disable script loading, you can do it through the settings menu."
+                            text_area.style = "display: none"
+                            copy_btn_container.style = "display: none"
+                        } else {
+                            modal_title.innerHTML = "Decrypted script execution failed"
+                            result_label.innerHTML = "The decrypted text was a script. The script <b>hasn't</b> been executed because script loading is disabled. If you wish to enable that, you can do it through the settings menu."
+                            text_area.style = "display: none"
+                            copy_btn_container.style = "display: none"
+                        }
+                    } else {
+                        modal_title.innerHTML = "Decrypted text"
+                        result_label.innerHTML = "Decrypted text"
+                        text_area.value = decrypted
+                    }
                     text_field.value = ""
                     submit_btn.disabled = true
+
                 }
 
             }
@@ -281,12 +349,12 @@
             } else {
                 submit_btn.disabled = true
             }
-            if(text_field.value.startsWith("U2FsdGVkX1")) {
+            if (text_field.value.startsWith("U2FsdGVkX1")) {
                 action_selector.value = "1"
                 set_submit_btn_text()
             } else {
                 action_selector.value = "2"
-                set_submit_btn_text() 
+                set_submit_btn_text()
             }
         })
         password_element.addEventListener("keyup", function () {
@@ -296,8 +364,12 @@
                 submit_btn.disabled = true
             }
         })
+        if (localStorage.getItem("scripts_enabled") == "0") {
+            scripts_chk_btn.checked = 0
+        } else {
+            scripts_chk_btn.checked = 1
+        }
         action_selector.addEventListener("change", set_submit_btn_text)
-        action_selector.value = localStorage.getItem("selection")
         set_submit_btn_text()
         main_form.addEventListener("submit", function (e) {
             e.preventDefault()
