@@ -119,7 +119,8 @@
                     This website is created is created by Stelios333.
                     <br>
                     I personaly do not collect any data and never share your text with third parties.
-                    The only thing that is being collected is statistic data (like how many times you visit this webpage) by GitHub.
+                    The only thing that is being collected is statistic data (like how many times you visit this
+                    webpage) by GitHub.
                 </div>
 
                 <div class="modal-footer">
@@ -179,7 +180,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ok</button>
                 </div>
 
             </div>
@@ -209,7 +210,7 @@
                             <div class="col-sm-3 sm-dev-mg text-center"><i class="fa-solid fa-circle-exclamation"
                                     style="color: #c70000;font-size:80px"></i></div>
                             <div class="col-sm-8">An error occurred. The provided password is probably wrong or the
-                                 encrypted text is invalid/incomplete.</div>
+                                encrypted text is invalid/incomplete.</div>
                         </div>
                     </div>
                 </div>
@@ -265,7 +266,8 @@
     </nav>
     <div class="container-fluid p-2 bg-primary text-white text-center">
         <h1>Text encryption/decryption using the AES algorithm</h1>
-        <p>To use just type/paste your encrypted/decrypted text, enter a password and click the encrypt/decrypt button.</p>
+        <p>To use just type/paste your encrypted/decrypted text, enter a password and click the encrypt/decrypt button.
+        </p>
     </div>
     <div class="container mt-3">
         <form id="main_form">
@@ -392,18 +394,27 @@
                 localStorage.setItem(name, value)
             }
         }
-        function init_setting(name, value = null) {
-            if (setting(name) == null) {
+        function init_setting(name, value = null, bypass = false) {
+            if (setting(name) == null || bypass) {
+                console.log("reseted "+value)
                 setting(name, value)
             }
         }
-        function init_checkbox(checkbox_elem, setting_name, true_value = "1", false_value = "0", code_if_checked = undefined, code_if_not_checked = undefined) {
-            init_setting(setting_name, true_value)
-            set_checkbox(checkbox_elem, setting_name, false_value)
+        function init_checkbox(params = {}) {
+            // Accepted parameters: checkbox_elem, setting_name, true_value, false_value, code_if_checked, code_if_not_checked, bypass
+            
+            var default_params = { checkbox_elem: undefined, setting_name: undefined ,default_value:"1", true_value:"1", false_value:"0", code_if_checked:undefined, code_if_not_checked:undefined, bypass:false }
+            var parameters = Object.assign(default_params, params)
+            if (!parameters.setting_name || !parameters.setting_name) {
+                alert("FATAL ERROR: An internal error occured. Please try again later.")
+            } else {
+                init_setting(parameters.setting_name, parameters.default_value, parameters.bypass)
+                set_checkbox(parameters.checkbox_elem, parameters.setting_name, parameters.false_value)
 
-            checkbox_elem.addEventListener("change", function () {
-                sync_checkbox_setting(checkbox_elem, setting_name, true_value, false_value, code_if_checked, code_if_not_checked)
-            })
+                parameters.checkbox_elem.addEventListener("change", function () {
+                    sync_checkbox_setting(parameters.checkbox_elem, parameters.setting_name, parameters.true_value, parameters.false_value, parameters.code_if_checked, parameters.code_if_not_checked)
+                })
+            }
         }
         function show_error() {
             modal_title.innerHTML = "Error"
@@ -544,9 +555,9 @@
         action_selector.addEventListener("change", set_submit_btn_text)
         set_submit_btn_text()
         // Initialize settings
-        init_checkbox(scripts_chk_btn, "scripts_enabled")
-        init_checkbox(clear_chk_btn, "clear_enabled")
-        init_checkbox(autodetect_chk_btn, "autodetect_enabled", "1", "0", autodetect)
+        init_checkbox({checkbox_elem:scripts_chk_btn, setting_name:"scripts_enabled"})
+        init_checkbox({checkbox_elem:clear_chk_btn, setting_name:"clear_enabled"})
+        init_checkbox({checkbox_elem:autodetect_chk_btn, setting_name:"autodetect_enabled", code_if_checked:autodetect})
         // Prevent reload on submit
         main_form.addEventListener("submit", function (e) {
             e.preventDefault()
