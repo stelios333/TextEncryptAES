@@ -371,6 +371,7 @@
         function sync_checkbox_setting(checkbox_elem, setting_name, true_value = "1", false_value = "0", code_if_checked = () => { }, code_if_not_checked = () => { }) {
             if (checkbox_elem.checked) {
                 setting(setting_name, true_value)
+
                 code_if_checked()
             } else {
                 setting(setting_name, false_value)
@@ -384,6 +385,7 @@
                 checkbox_elem.checked = 1
             }
         }
+
         function setting(name, value = null) {
             if (value == null) {
                 return localStorage.getItem(name)
@@ -395,6 +397,14 @@
             if (setting(name) == null) {
                 setting(name, value)
             }
+        }
+        function init_checkbox(checkbox_elem, setting_name, true_value = "1", false_value = "0", code_if_checked = undefined, code_if_not_checked = undefined) {
+            init_setting(setting_name, true_value)
+            set_checkbox(checkbox_elem, setting_name, false_value)
+
+            checkbox_elem.addEventListener("change", function () {
+                sync_checkbox_setting(checkbox_elem, setting_name, true_value, false_value, code_if_checked, code_if_not_checked)
+            })
         }
         function show_error() {
             modal_title.innerHTML = "Error"
@@ -423,15 +433,11 @@
                 loader.style.display = "none"
             }, 500)
         })
-        scripts_chk_btn.addEventListener("change", function () {
-            sync_checkbox_setting(scripts_chk_btn, "scripts_enabled")
-        })
-        autodetect_chk_btn.addEventListener("change", function () {
-            sync_checkbox_setting(autodetect_chk_btn, "autodetect_enabled", undefined, undefined, autodetect)
-        })
-        clear_chk_btn.addEventListener("change", function () {
-            sync_checkbox_setting(clear_chk_btn, "clear_enabled")
-        })
+
+
+
+
+
         // Show/hide the password
         toggle_password.addEventListener("click", function () {
             if (password_element.getAttribute("type") == "password") {
@@ -489,7 +495,7 @@
                         text_area.value = decrypted
                         after_successful()
                     }
-                    
+
 
                 }
 
@@ -527,9 +533,7 @@
                 submit_btn.disabled = true
             }
         })
-        set_checkbox(scripts_chk_btn, "scripts_enabled")
-        set_checkbox(autodetect_chk_btn, "autodetect_enabled")
-        set_checkbox(clear_chk_btn, "clear_enabled")
+
         // Show result modal when the submit button gets clicked
         submit_btn.addEventListener("click", function () {
             loader.style.display = "block"
@@ -541,9 +545,9 @@
         action_selector.addEventListener("change", set_submit_btn_text)
         set_submit_btn_text()
         // Initialize settings
-        init_setting("scripts_enabled", "1")
-        init_setting("autodetect_enabled", "1")
-        init_setting("clear_enabled", "1")
+        init_checkbox(scripts_chk_btn, "scripts_enabled")
+        init_checkbox(clear_chk_btn, "clear_enabled")
+        init_checkbox(autodetect_chk_btn, "autodetect_enabled", "1", "0", autodetect)
         // Prevent reload on submit
         main_form.addEventListener("submit", function (e) {
             e.preventDefault()
