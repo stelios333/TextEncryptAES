@@ -6,9 +6,6 @@
     <meta charset="utf-8">
     <link rel="icon" type="image/x-icon" href="./favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
@@ -17,6 +14,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"
         integrity="sha512-a+SUDuwNzXDvz4XrIcXHuCf089/iJAoN4lmrXJg18XnduKK6YlDHNRalv4yd1N40OKI80tFidF+rqTFKGPoWFQ=="
         crossorigin="anonymous" referrerpolicy="no-referre"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css"
+        rel="stylesheet">
     <style>
         #loading {
             position: fixed;
@@ -47,6 +46,27 @@
             .sm-dev-mg {
                 margin-bottom: 1rem !important;
             }
+        }
+
+        .popover-body {
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+        }
+
+        
+
+        .b-i {
+            user-select: none;
+            display: inline-block;
+            font-family: bootstrap-icons !important;
+            font-style: normal;
+            font-weight: 400 !important;
+            font-variant: normal;
+            text-transform: none;
+            line-height: 1;
+            vertical-align: -.125em;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale
         }
     </style>
 </head>
@@ -135,7 +155,7 @@
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h4 class="modal-title"><i class="fa-solid fa-gear"></i> Settings</h4>
+                    <h4 class="modal-title"><i class="b-i">&#xF3E2;</i> Settings</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
@@ -180,7 +200,30 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ok</button>
+                    <button tabindex="0" type="button" title="<span class='text-danger'>Warning!</span>"
+                        data-bs-placement="left" class="btn btn-outline-danger" id="reset_btn" data-bs-html="true">Reset
+                        all</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ok</button>
+                    <div id="reset_popover_content" style="display: none;">
+                        <p class="lh-1 mb-2">Are you sure you want to reset all the settings?</p>
+
+                        <div class="row">
+                            <div class="col pr-1 ">
+                                <div class="d-grid">
+                                    <button class="btn btn-outline-danger btn-block" id="confirmReset">Yes</button>
+                                </div>
+                            </div>
+                            <div id="close_btn_container" class="col pl-0">
+                                <div class="d-grid">
+
+                                    <button class="btn btn-success btn-block" id="cancelReset">No</button>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
                 </div>
 
             </div>
@@ -207,8 +250,8 @@
                     </form>
                     <div id="error">
                         <div class="row">
-                            <div class="col-sm-3 sm-dev-mg text-center"><i class="fa-solid fa-circle-exclamation"
-                                    style="color: #c70000;font-size:80px"></i></div>
+                            <div class="col-sm-3 sm-dev-mg text-center"><i class="b-i"
+                                    style="color: #c70000;font-size:80px;">&#xF332;</i></div>
                             <div class="col-sm-8">An error occurred. The provided password is probably wrong or the
                                 encrypted text is invalid/incomplete.</div>
                         </div>
@@ -222,7 +265,7 @@
                                 <button tabindex="0" data-bs-trigger="focus" type="button" id="copyButton" role="button"
                                     class="btn btn-primary btn-block" title="Text copied!"
                                     data-bs-content="Paste it wherever you want." data-bs-placement="left">Copy text
-                                    <i class="fa-solid fa-copy"></i></button>
+                                    <i class="b-i">&#xF759;</i></button>
                             </div>
                         </div>
                         <div id="close_btn_container" class="col pr-0">
@@ -251,14 +294,14 @@
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="modal" data-bs-target="#settings_dialog" role="button"><i
-                                class="fa-solid fa-gear"></i> Settings
+                                class="b-i">&#xF3E2;</i> Settings
                         </a>
 
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="modal" data-bs-target="#about_dialog" role="button"><i
-                                class="fa-solid fa-circle-info"></i> About</a>
+                                class="b-i">&#xF430;</i> About</a>
 
                 </ul>
             </div>
@@ -286,7 +329,7 @@
                             <input type="password" class="form-control" id="pwd" placeholder="Enter password"
                                 name="pswd">
                             <span class="input-group-text" role="button" id="togglePassword">
-                                <i id="eyeIcon" class="fa-regular fa-eye"></i>
+                                <i id="eyeIcon" class="b-i">&#xF33E;</i>
                             </span>
                         </div>
 
@@ -302,8 +345,7 @@
                 </div>
 
                 <div class="d-grid mt-3">
-                    <button type="submit" class="btn btn-primary btn-block" id="submit_btn" disabled>Decrypt <i
-                            class="fa-solid fa-lock-open"></i></button>
+                    <button type="submit" class="btn btn-primary btn-block" id="submit_btn" disabled></button>
                 </div>
             </div>
         </form>
@@ -318,7 +360,7 @@
             Stelios333.
             UI stylesheet by <a target="_blank" class="text-light" href="https://getbootstrap.com/">Bootstrap</a>. Icons
             by
-            <a target="_blank" class="text-light" href="https://fontawesome.com">Font Awesome</a>.
+            <a target="_blank" class="text-light" href="https://icons.getbootstrap.com/">Bootstrap Icons</a>.
             AES cipher by <a target="_blank" class="text-light" href="https://github.com/brix/crypto-js">CryptoJS</a>
         </div>
         <!-- Copyright -->
@@ -337,6 +379,7 @@
         const eye_icon = toggle_password.querySelector("i")
         const copy_btn_container = document.getElementById("copy_btn_container")
         const copy_btn = document.getElementById("copyButton")
+        const reset_btn = document.getElementById("reset_btn")
         const close_btn_container = document.getElementById("close_btn_container")
         const clear_chk_btn = document.getElementById("clear_enabled")
         const scripts_chk_btn = document.getElementById("scripts_enabled")
@@ -348,16 +391,55 @@
         const result_label = result_modal.querySelector("#result_explanation")
         const result_form = result_modal.querySelector("#result_form")
         const loaded_script = document.getElementById("loaded")
+        const reset_popover_content = document.getElementById("reset_popover_content")
         const copy_btn_popover = new bootstrap.Popover(copy_btn, { "delay": 50 })
+        const reset_popover_html = reset_popover_content.innerHTML
+        reset_popover_content.innerHTML = ""
+        const reset_btn_popover = new bootstrap.Popover(reset_btn, { "content": reset_popover_html, "sanitize": false })
         const result_modal_modal = new bootstrap.Modal(result_modal)
         var action = action_selector.value
+        var checkboxes = []
+
+        reset_btn.addEventListener('shown.bs.popover', () => {
+            var confirm_reset = document.getElementById("confirmReset")
+            var cancel_reset = document.getElementById("cancelReset")
+            confirm_reset.addEventListener("click", function () {
+                reset_btn_popover.hide()
+                reset_checkboxes(checkboxes)
+            })
+            cancel_reset.addEventListener("click", function () {
+                console.log("cli")
+                reset_btn_popover.hide()
+            })
+
+        })
+
+        document.querySelector('body').addEventListener('click', function (e) {
+            var in_popover = e.target.closest(".popover");
+
+            if (!in_popover) {
+                var popovers = document.querySelectorAll('.popover.show');
+
+                if (popovers[0]) {
+                    var triggler_selector = `[aria-describedby=${popovers[0].id}]`;
+
+                    if (!e.target.closest(triggler_selector)) {
+                        let the_trigger = document.querySelector(triggler_selector);
+
+                        if (the_trigger == reset_btn) {
+                            bootstrap.Popover.getInstance(the_trigger).hide();
+                        }
+                    }
+                }
+            }
+        });
 
         function set_submit_btn_text() {
             action = action_selector.value
             if (action == "1") {
-                submit_btn.innerHTML = 'Decrypt <i class="fa-solid fa-lock-open">'
+                submit_btn.innerHTML = 'Decrypt <i class="b-i">&#xF5FF;</i>'
             } else if (action == "2") {
-                submit_btn.innerHTML = 'Encrypt <i class="fa-solid fa-lock">'
+                submit_btn.innerHTML = 'Encrypt <i class="b-i">&#xF47A;</i>'
             }
         }
         function autodetect() {
@@ -369,24 +451,28 @@
                 set_submit_btn_text()
             }
         }
-        function sync_checkbox_setting(checkbox_elem, setting_name, true_value = "1", false_value = "0", code_if_checked = () => { }, code_if_not_checked = () => { }) {
+        function sync_checkbox_setting(checkbox_elem, setting_name, true_value = "1", false_value = "0", func_if_checked = () => { }, func_if_not_checked = () => { }) {
             if (checkbox_elem.checked) {
                 setting(setting_name, true_value)
 
-                code_if_checked()
+                func_if_checked()
             } else {
                 setting(setting_name, false_value)
-                code_if_not_checked()
+                func_if_not_checked()
             }
         }
-        function set_checkbox(checkbox_elem, setting_name, false_name = "0") {
+        function configure_checkbox(checkbox_elem, setting_name, false_name = "0") {
             if (setting(setting_name) == false_name) {
                 checkbox_elem.checked = 0
             } else {
                 checkbox_elem.checked = 1
             }
         }
-
+        function reset_checkboxes(checkbox_array) {
+            checkbox_array.forEach(function (params, index) {
+                init_checkbox(Object.assign(params, { force_reset: true }))
+            })
+        }
         function setting(name, value = null) {
             if (value == null) {
                 return localStorage.getItem(name)
@@ -394,25 +480,26 @@
                 localStorage.setItem(name, value)
             }
         }
-        function init_setting(name, value = null, bypass = false) {
-            if (setting(name) == null || bypass) {
-                console.log("reseted "+value)
+        function init_setting(name, value = null, force_reset = false) {
+            if (setting(name) == null || force_reset) {
+                console.log("reseted " + value)
                 setting(name, value)
             }
         }
         function init_checkbox(params = {}) {
-            // Accepted parameters: checkbox_elem, setting_name, true_value, false_value, code_if_checked, code_if_not_checked, bypass
-            
-            var default_params = { checkbox_elem: undefined, setting_name: undefined ,default_value:"1", true_value:"1", false_value:"0", code_if_checked:undefined, code_if_not_checked:undefined, bypass:false }
+            // Accepted parameters: checkbox_elem, setting_name, true_value, false_value, func_if_checked, func_if_not_checked, force_reset
+
+            var default_params = { checkbox_elem: undefined, setting_name: undefined, default_value: "1", true_value: "1", false_value: "0", func_if_checked: undefined, func_if_not_checked: undefined, force_reset: false }
             var parameters = Object.assign(default_params, params)
+            checkboxes.push(parameters)
             if (!parameters.setting_name || !parameters.setting_name) {
                 alert("FATAL ERROR: An internal error occured. Please try again later.")
             } else {
-                init_setting(parameters.setting_name, parameters.default_value, parameters.bypass)
-                set_checkbox(parameters.checkbox_elem, parameters.setting_name, parameters.false_value)
+                init_setting(parameters.setting_name, parameters.default_value, parameters.force_reset)
+                configure_checkbox(parameters.checkbox_elem, parameters.setting_name, parameters.false_value)
 
                 parameters.checkbox_elem.addEventListener("change", function () {
-                    sync_checkbox_setting(parameters.checkbox_elem, parameters.setting_name, parameters.true_value, parameters.false_value, parameters.code_if_checked, parameters.code_if_not_checked)
+                    sync_checkbox_setting(parameters.checkbox_elem, parameters.setting_name, parameters.true_value, parameters.false_value, parameters.func_if_checked, parameters.func_if_not_checked)
                 })
             }
         }
@@ -452,10 +539,10 @@
         toggle_password.addEventListener("click", function () {
             if (password_element.getAttribute("type") == "password") {
                 password_element.setAttribute("type", "text")
-                eye_icon.setAttribute("class", "fa-regular fa-eye-slash")
+                eye_icon.innerText = "\uF33F"
             } else {
                 password_element.setAttribute("type", "password")
-                eye_icon.setAttribute("class", "fa-regular fa-eye")
+                eye_icon.innerText = "\uF33E"
             }
         })
         // What to do when opening the result modal.
@@ -555,9 +642,9 @@
         action_selector.addEventListener("change", set_submit_btn_text)
         set_submit_btn_text()
         // Initialize settings
-        init_checkbox({checkbox_elem:scripts_chk_btn, setting_name:"scripts_enabled"})
-        init_checkbox({checkbox_elem:clear_chk_btn, setting_name:"clear_enabled"})
-        init_checkbox({checkbox_elem:autodetect_chk_btn, setting_name:"autodetect_enabled", code_if_checked:autodetect})
+        init_checkbox({ checkbox_elem: scripts_chk_btn, setting_name: "scripts_enabled" })
+        init_checkbox({ checkbox_elem: clear_chk_btn, setting_name: "clear_enabled" })
+        init_checkbox({ checkbox_elem: autodetect_chk_btn, setting_name: "autodetect_enabled", func_if_checked: autodetect })
         // Prevent reload on submit
         main_form.addEventListener("submit", function (e) {
             e.preventDefault()
